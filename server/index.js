@@ -1,9 +1,17 @@
-const { application } = require('express')
+
 const express = require('express')
+const mongoose = require('mongoose')
+require('dotenv').config()
 
 const app = express()
+var db = require('./config/connection')
+db.connect((err)=>{
+  if(err)
+  console.log("Connection error"+err);
+  else
+  console.log("Database connected");
+})
 
-require('dotenv').config()
 
 const PORT = process.env.PORT
 app.get('/', (req, res) => {
@@ -11,7 +19,6 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api', (req, res) => {
-    console.log("helloooooo");
     try {
         res.json({ message: "Sample from server" })
     } catch (error) {
@@ -23,4 +30,11 @@ app.get('/api', (req, res) => {
 app.listen(PORT, () => {
     console.log(`sever running on ${PORT}`);
 })
+
+app.use(express.json()) 
+
+// Connect to database
+
+
+app.use('',require('./routers/userRouter'))
 
