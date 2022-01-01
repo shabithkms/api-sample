@@ -1,89 +1,119 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Navbar,
-  Form,
-  Button,
-  Nav,
-  Container,
-  Offcanvas,
-  NavDropdown,
-  FormControl,
-} from "react-bootstrap";
+import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import AuthContext from "../../context/userContext";
-import axios from 'axios'
+import axios from "axios";
 
-function NavBar() {
+function NavBar(props) {
   const navigate = useNavigate();
-  const {getLoggedIn} = useContext(AuthContext);
+  const { getLoggedIn } = useContext(AuthContext);
+  //Logout
 
-  async function logout() {
-    await axios.get("http://localhost:3001/logout").then((res)=>{
-      getLoggedIn();
-      navigate('/')
-    }).catch((err)=>{
-      console.log(err);
-    })
-    
+  async function logout(admin) {
+    console.log(admin);
+    if (admin) {
+      localStorage.removeItem("admin");
+      navigate("/admin/login");
+    } else {
+      await axios
+        .get("http://localhost:3001/logout")
+        .then((res) => {
+          getLoggedIn();
+          localStorage.removeItem("user");
+          navigate("/login");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
-
-  const { loggedIn } = useContext(AuthContext);
-  console.log(loggedIn, "HY");
+  // const { loggedIn } = useContext(AuthContext);
   return (
-    <Navbar bg="light" expand={false}>
-      <Container fluid>
-        <Navbar.Brand href="#">Incubation</Navbar.Brand>
-        <Navbar.Toggle aria-controls="offcanvasNavbar" />
-        <Navbar.Offcanvas
-          id="offcanvasNavbar"
-          aria-labelledby="offcanvasNavbarLabel"
-          placement="end"
-        >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title id="offcanvasNavbarLabel">
-              Incubation
-            </Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Nav className="justify-content-end flex-grow-1 pe-3">
-              {/* <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link> */}
-              {loggedIn === false && (
-                <>
-                  <Nav.Link onClick={() => navigate("/login")}>Login</Nav.Link>
-                  <Nav.Link onClick={() => navigate("/signup")}>
-                    Signup
-                  </Nav.Link>
-                </>
-              )}
-              {loggedIn === true && (
-                <Nav.Link onClick={() => navigate("/logout")}>
-                  <button onClick={logout}>Logout</button>
-                </Nav.Link>
-              )}
-
-              {/* <NavDropdown title="Dropdown" id="offcanvasNavbarDropdown">
-                <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action4">
-                  Another action
+    <Navbar
+      collapseOnSelect
+      expand="lg"
+      bg="dark"
+      className="header"
+      variant="dark"
+    >
+      {props.Admin ? (
+        //Admin header
+        <Container>
+          <Navbar.Brand className="sticky-nav"><span onClick={()=>{
+            navigate('/admin')
+          }} className="text-light" style={{cursor:"pointer"}}>Admin panel</span></Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              {/* <NavDropdown
+                title="Application List"
+                id="collasible-nav-dropdown"
+              >
+                <NavDropdown.Item href="/admin#New">
+                  New application
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/admin#Pending">
+                  Pending apllication
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/admin#Approved">
+                  Approved application
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="#action5">
-                  Something else here
-                </NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.4">
+                Separated link
+              </NavDropdown.Item>
               </NavDropdown> */}
+              <Nav.Link onClick={() => navigate("/admin/track")}>
+                Record track
+              </Nav.Link>
+              <Nav.Link onClick={() => navigate("/admin/BookSlot")}>
+                Slot booking
+              </Nav.Link>
             </Nav>
-            {/* <Form className="d-flex">
-              <FormControl
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-              />
-              <Button variant="outline-success">Search</Button>
-            </Form> */}
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
-      </Container>
+            <Nav>
+              {/* <Nav.Link onClick={() => navigate("/apply")}>Apply</Nav.Link> */}
+              <Nav.Link>
+                <button
+                  onClick={() => {
+                    logout(props.Admin);
+                  }}
+                >
+                  Logout
+                </button>
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      ) : (
+
+        //user Header
+        <Container>
+          <Navbar.Brand>Incubation</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link onClick={() => navigate("/apply")}>Apply</Nav.Link>
+              {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">
+                Another action
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.4">
+                Separated link
+              </NavDropdown.Item>
+            </NavDropdown> */}
+            </Nav>
+            <Nav>
+              {/* <Nav.Link onClick={() => navigate("/apply")}>Apply</Nav.Link> */}
+              <Nav.Link>
+                <button onClick={logout}>Logout</button>
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      )}
     </Navbar>
   );
 }
