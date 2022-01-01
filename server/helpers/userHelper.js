@@ -34,24 +34,34 @@ module.exports = {
       if (user) {
         let status = await bcrypt.compare(password, user.password);
         if (status) {
-          console.log(user);
           response.status = true;
           response.user = user;
           resolve(response);
+        } else {
+          response.status = false;
+          response.noUser = true;
+          resolve(response);
         }
       } else {
+        response.status = false;
         response.noUser = true;
         resolve(response);
       }
     });
   },
-  applyForm:(data)=>{
-    return new Promise((resolve,reject)=>{
-      db.get().collection(collection.FORM_COLLECTION).insertOne(data).then((response)=>{
-        resolve(response)
-      }).catch((err)=>{
-        reject(err)
-      })
-    })
-  }
+  applyForm: (data) => {   
+    return new Promise((resolve, reject) => {
+      data.Status='New'
+      data.Booked=false
+      db.get()
+        .collection(collection.FORM_COLLECTION)
+        .insertOne(data)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
 };

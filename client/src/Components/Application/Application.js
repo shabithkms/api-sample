@@ -15,7 +15,7 @@ function Application() {
   let user = JSON.parse(localStorage.getItem("user"));
   console.log(user);
   let userId = user._id;
-  let userName=user.fname+user.lname
+  let userName=user.fname +user.lname
 
   const initialValues = {
     User: userId,
@@ -182,55 +182,55 @@ function Application() {
     return errors;
   };
 
-  //My part
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  // //My part
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.currentTarget);
 
-    const Data = {
-      Name: formData.get("Name"),
-      Address: formData.get("Address"),
-      City: formData.get("City"),
-      State: formData.get("State"),
-      Email: formData.get("Email"),
-      Phone: formData.get("Phone"),
-      CompanyName: formData.get("CompanyName"),
-      AboutTeam: formData.get("AboutTeam"),
-      AboutProduct: formData.get("AboutProduct"),
-      AboutProblem: formData.get("AboutProblem"),
-      AboutSolution: formData.get("AboutSolution"),
-      AboutValue: formData.get("AboutValue"),
-      AboutCompetition: formData.get("AboutCompetition"),
-      AboutRevenue: formData.get("AboutRevenue"),
-      AboutMarket: formData.get("AboutMarket"),
-    };
-    await axios
-      .post("http://localhost:3001/apply", Data)
-      .then((res) => {
-        console.log(res.data.errorCode);
-        if (res.data.success) {
-          alert(res.data.message);
-          navigate("/");
-        } else if (res.data.errorCode === 401) {
-          alert("email exist");
-          setError(true);
-        } else {
-        }
-      })
-      .catch(async (err) => {
-        console.log(err);
-        await setError(true);
-        console.log("error", error);
-      });
-  };
-  useEffect(() => {
-    let user = localStorage.getItem("user");
-    if (user) {
-      navigate("/apply");
-    } else {
-      navigate("/login");
-    }
-  }, [navigate]);
+  //   const Data = {
+  //     Name: formData.get("Name"),
+  //     Address: formData.get("Address"),
+  //     City: formData.get("City"),
+  //     State: formData.get("State"),
+  //     Email: formData.get("Email"),
+  //     Phone: formData.get("Phone"),
+  //     CompanyName: formData.get("CompanyName"),
+  //     AboutTeam: formData.get("AboutTeam"),
+  //     AboutProduct: formData.get("AboutProduct"),
+  //     AboutProblem: formData.get("AboutProblem"),
+  //     AboutSolution: formData.get("AboutSolution"),
+  //     AboutValue: formData.get("AboutValue"),
+  //     AboutCompetition: formData.get("AboutCompetition"),
+  //     AboutRevenue: formData.get("AboutRevenue"),
+  //     AboutMarket: formData.get("AboutMarket"),
+  //   };
+  //   await axios
+  //     .post("http://localhost:3001/apply", Data)
+  //     .then((res) => {
+  //       console.log(res.data.errorCode);
+  //       if (res.data.success) {
+  //         alert(res.data.message);
+  //         navigate("/");
+  //       } else if (res.data.errorCode === 401) {
+  //         alert("email exist");
+  //         setError(true);
+  //       } else {
+  //       }
+  //     })
+  //     .catch(async (err) => {
+  //       console.log(err);
+  //       await setError(true);
+  //       console.log("error", error);
+  //     });
+  // };
+  // useEffect(() => {
+  //   let user = localStorage.getItem("user");
+  //   if (user) {
+  //     navigate("/apply");
+  //   } else {
+  //     navigate("/login");
+  //   }
+  // }, [navigate]);
   return (
     <div className="container">
       <h3 style={{ marginTop: "2rem" }}>Registration Form</h3>

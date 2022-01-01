@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
+var session=require('express-session')
+var MongoStore=require('connect-mongo')
+var userRoute= require("./routers/userRouter"); 
+// var adminRoute = require("./routers/adminRouter");
 const app = express();
 var db = require("./config/connection");
 db.connect((err) => {
@@ -31,6 +34,7 @@ app.listen(PORT, () => {
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
     origin: ["http://localhost:3000"],
@@ -38,10 +42,21 @@ app.use(
 
   })
 );
+app.use(session({
+  secret: "Key",
+  resave:false,
+  saveUninitialized:true,
+  store:MongoStore.create({
+    mongoUrl:process.env.URL ,
+    ttl:2*24*60*60,
+    autoRemove:'native'
+  })
+}))
 
 //Routers
-var userRouter = require("./routers/userRouter"); 
-// var adminRouter = require("./routers/adminRouter");
 
-app.use("/", userRouter);
-// app.use("/admin", adminRouter);
+
+app.use("/", userRoute);
+// app.use("/admin", adminRoute); 
+
+module.exports = app;

@@ -75,7 +75,8 @@ function NavBar(props) {
               <Nav.Link>
                 <button
                   onClick={() => {
-                    logout(props.Admin);
+                    let admin=true 
+                    logout(admin);
                   }}
                 >
                   Logout
@@ -108,7 +109,10 @@ function NavBar(props) {
             <Nav>
               {/* <Nav.Link onClick={() => navigate("/apply")}>Apply</Nav.Link> */}
               <Nav.Link>
-                <button onClick={logout}>Logout</button>
+                <button onClick={()=>{
+                  let admin=false
+                  logout(admin)
+                }}>Logout</button>
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
